@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8&2y-&gts+h&=)q9vl#_5^qb&+nt8@hns=z5wls6#ko=uy=mv!'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'changeme')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', 'False'))
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1').split(' ')
 
 
 # Application definition
@@ -80,8 +80,8 @@ WSGI_APPLICATION = 'image_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.environ.get('ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.environ.get('NAME', BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -132,8 +132,17 @@ if not os.path.exists(MEDIA_ROOT) or not os.path.exists(IMAGES_DIR):
 
 
 # celery
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_URL = os.environ.get(
+    'CELERY_BROKER_URL', 'redis://redis:6379')
+
+CELERY_RESULT_BACKEND = os.environ.get(
+    'CELERY_RESULT_BACKEND', 'redis://redis:6379')
+
+CELERY_ACCEPT_CONTENT = os.environ.get(
+    'CELERY_ACCEPT_CONTENT', ['application/json'])
+
+CELERY_RESULT_SERIALIZER = os.environ.get(
+    'CELERY_RESULT_SERIALIZER', 'json')
+
+CELERY_TASK_SERIALIZER = os.environ.get(
+    'CELERY_TASK_SERIALIZER', 'json')
